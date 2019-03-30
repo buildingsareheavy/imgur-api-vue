@@ -2,7 +2,7 @@ import api from "../../api/imgur";
 import qs from "qs";
 
 const state = {
-  token: null
+  token: window.localStorage.getItem("imgur_token") // gets the token, but doesn't store it. Check 'finalize login' for that.
 };
 
 const getters = {
@@ -20,9 +20,9 @@ const actions = {
     api.login();
   },
   finalizeLogin({ commit }, hash) {
-    const query = qs.parse(hash.replace("#", ""));
-
-    commit("setToken", query.access_token);
+    const query = qs.parse(hash.replace("#", "")); // deleting the "#" symbol
+    commit("setToken", query.access_token); // access_token is from the URL after the login
+    window.localStorage.setItem("imgur_token", query.access_token); // looks for token and stores it, and checks to see if it's still there when a user comes back (setItem)
   },
   logout: ({ commit }) => {
     commit("setToken", null);
