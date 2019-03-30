@@ -1,4 +1,5 @@
 import api from "../../api/imgur";
+import qs from "qs";
 
 const state = {
   token: null
@@ -14,13 +15,18 @@ const getters = {
 const actions = {
   // to call a mutation, we use the commit function
   // NOT mutations.setToken
-  logout: ({ commit }) => {
-    commit("setToken", null);
-    // you could call another mutation or anything async if you wanted
-  },
   login: () => {
     // as soon as we call the api function, we instantly navigate away from our application because of window.location
     api.login();
+  },
+  finalizeLogin({ commit }, hash) {
+    const query = qs.parse(hash.replace("#", ""));
+
+    commit("setToken", query.access_token);
+  },
+  logout: ({ commit }) => {
+    commit("setToken", null);
+    // you could call another mutation or anything async if you wanted
   }
 };
 
